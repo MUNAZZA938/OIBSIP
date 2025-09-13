@@ -1,0 +1,261 @@
+import java.util.*;
+
+class Book {
+    int id;
+    String title;
+    String author;
+    boolean isIssued;
+
+    public Book(int id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isIssued = false;
+    }
+
+    @Override
+    public String toString() {
+        return id + " | " + title + " by " + author + (isIssued ? " [Issued]" : " [Available]");
+    }
+}
+
+class Member {
+    String name;
+    String email;
+
+    public Member(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+}
+
+public class DigitalLibrarySystem {
+    static Scanner sc = new Scanner(System.in);
+    static List<Book> books = new ArrayList<>();
+    static List<Member> members = new ArrayList<>();
+    static String adminUsername = "admin";
+    static String adminPassword = "admin123";
+
+    public static void main(String[] args) {
+        // Add some demo books
+        books.add(new Book(1, "The Alchemist", "Paulo Coelho"));
+        books.add(new Book(2, "Clean Code", "Robert C. Martin"));
+        books.add(new Book(3, "Java: The Complete Reference", "Herbert Schildt"));
+
+        while (true) {
+            System.out.println("\n=== DIGITAL LIBRARY SYSTEM ===");
+            System.out.println("1. Admin Login");
+            System.out.println("2. User Access");
+            System.out.println("3. Exit");
+            System.out.print("Choose option: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    adminLogin();
+                    break;
+                case 2:
+                    userAccess();
+                    break;
+                case 3:
+                    System.out.println(" Exiting system. Goodbye!");
+                    System.exit(0);
+                default:
+                    System.out.println(" Invalid choice.");
+            }
+        }
+    }
+
+    // Admin functions
+    static void adminLogin() {
+        System.out.print("Enter Admin Username: ");
+        String username = sc.nextLine();
+        System.out.print("Enter Admin Password: ");
+        String password = sc.nextLine();
+
+        if (username.equals(adminUsername) && password.equals(adminPassword)) {
+            System.out.println(" Admin login successful.");
+            adminMenu();
+        } else {
+            System.out.println(" Invalid credentials.");
+        }
+    }
+
+    static void adminMenu() {
+        while (true) {
+            System.out.println("\n--- Admin Panel ---");
+            System.out.println("1. View All Books");
+            System.out.println("2. Add Book");
+            System.out.println("3. Delete Book");
+            System.out.println("4. View Members");
+            System.out.println("5. Add Member");
+            System.out.println("6. Back to Main Menu");
+            System.out.print("Choose option: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    viewBooks();
+                    break;
+                case 2:
+                    addBook();
+                    break;
+                case 3:
+                    deleteBook();
+                    break;
+                case 4:
+                    viewMembers();
+                    break;
+                case 5:
+                    addMember();
+                    break;
+                case 6:
+                    return;
+                default:
+                    System.out.println(" Invalid choice.");
+            }
+        }
+    }
+
+    // User functions
+    static void userAccess() {
+        System.out.print("Enter your name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter your email: ");
+        String email = sc.nextLine();
+
+        System.out.println(" Welcome, " + name + "!");
+
+        while (true) {
+            System.out.println("\n--- User Panel ---");
+            System.out.println("1. View All Books");
+            System.out.println("2. Search Book by Title");
+            System.out.println("3. Issue Book");
+            System.out.println("4. Return Book");
+            System.out.println("5. Contact Library (Simulation)");
+            System.out.println("6. Logout");
+            System.out.print("Choose option: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    viewBooks();
+                    break;
+                case 2:
+                    searchBook();
+                    break;
+                case 3:
+                    issueBook();
+                    break;
+                case 4:
+                    returnBook();
+                    break;
+                case 5:
+                    System.out.println(" A simulated query email has been sent. Thank you.");
+                    break;
+                case 6:
+                    return;
+                default:
+                    System.out.println(" Invalid choice.");
+            }
+        }
+    }
+
+    static void viewBooks() {
+        System.out.println("\n Library Books:");
+        for (Book b : books) {
+            System.out.println(b);
+        }
+    }
+
+    static void addBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        System.out.print("Enter Book Title: ");
+        String title = sc.nextLine();
+        System.out.print("Enter Author: ");
+        String author = sc.nextLine();
+
+        books.add(new Book(id, title, author));
+        System.out.println(" Book added successfully.");
+    }
+
+    static void deleteBook() {
+        System.out.print("Enter Book ID to delete: ");
+        int id = sc.nextInt();
+        boolean removed = books.removeIf(b -> b.id == id);
+        System.out.println(removed ? " Book deleted." : " Book not found.");
+    }
+
+    static void viewMembers() {
+        System.out.println("\n Library Members:");
+        if (members.isEmpty()) {
+            System.out.println("No members registered yet.");
+        } else {
+            for (Member m : members) {
+                System.out.println("- " + m.name + " (" + m.email + ")");
+            }
+        }
+    }
+
+    static void addMember() {
+        System.out.print("Enter Member Name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter Email: ");
+        String email = sc.nextLine();
+
+        members.add(new Member(name, email));
+        System.out.println(" Member added.");
+    }
+
+    static void searchBook() {
+        System.out.print("Enter book title to search: ");
+        String title = sc.nextLine().toLowerCase();
+
+        for (Book b : books) {
+            if (b.title.toLowerCase().contains(title)) {
+                System.out.println(" Found: " + b);
+            }
+        }
+    }
+
+    static void issueBook() {
+        System.out.print("Enter Book ID to issue: ");
+        int id = sc.nextInt();
+        for (Book b : books) {
+            if (b.id == id) {
+                if (!b.isIssued) {
+                    b.isIssued = true;
+                    System.out.println(" Book issued successfully.");
+                    return;
+                } else {
+                    System.out.println(" Book already issued.");
+                    return;
+                }
+            }
+        }
+        System.out.println(" Book not found.");
+    }
+
+    static void returnBook() {
+        System.out.print("Enter Book ID to return: ");
+        int id = sc.nextInt();
+        for (Book b : books) {
+            if (b.id == id) {
+                if (b.isIssued) {
+                    b.isIssued = false;
+                    System.out.println(" Book returned successfully.");
+                    return;
+                } else {
+                    System.out.println(" This book wasn't issued.");
+                    return;
+                }
+            }
+        }
+        System.out.println(" Book not found.");
+    }
+}
